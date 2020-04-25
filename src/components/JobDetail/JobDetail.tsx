@@ -1,12 +1,9 @@
 import * as React from 'react';
 import { GetJobDetailQuery } from '../../generated/graphql';
-// import './styles.css';
 
 interface Props {
   data: GetJobDetailQuery;
 }
-
-const className = 'LaunchProfile';
 
 const LaunchProfile: React.FC<Props> = ({ data }) => {
   if (!data.job) {
