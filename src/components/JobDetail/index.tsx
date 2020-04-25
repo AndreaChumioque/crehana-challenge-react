@@ -2,12 +2,17 @@ import * as React from 'react';
 import { useGetJobDetailQuery } from '../../generated/graphql';
 import JobDetail from './JobDetail';
 
-const JobDetailContainer = () => {
+interface OwnProps {
+  match: any;
+}
+
+const JobDetailContainer = ({ match }: OwnProps) => {
+  console.log(match);
   const { data, error, loading } = useGetJobDetailQuery({
     variables: {
       input: {
-        jobSlug: 'slug',
-        companySlug: 'slug'
+        jobSlug: match.params.jobslug,
+        companySlug: match.params.companyslug,
       }
     }
   });
@@ -21,7 +26,7 @@ const JobDetailContainer = () => {
   }
 
   if (!data) {
-    return <div>Select a flight from the panel</div>;
+    return <div>No tenemos información disponible.</div>;
   }
 
   return <JobDetail data={data} />;
