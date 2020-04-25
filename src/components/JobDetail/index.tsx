@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useGetJobDetailQuery } from '../../generated/graphql';
 import JobDetail from './JobDetail';
+import Loader from '../Loader';
 
 interface OwnProps {
   match: any;
@@ -18,7 +19,7 @@ const JobDetailContainer = ({ match }: OwnProps) => {
   });
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   if (error) {

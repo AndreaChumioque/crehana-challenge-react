@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { Link } from "react-router-dom";
+import { isEmpty, cloneDeep, orderBy } from 'lodash';
 import * as moment from 'moment';
 import 'moment/locale/es';
-import { Link } from "react-router-dom";
-import { GetJobListQuery, GetCompaniesQuery, GetCountriesQuery } from '../../generated/graphql';
-import { isEmpty, cloneDeep, orderBy } from 'lodash';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Grid, FormControl, Input, Select, MenuItem, Avatar, Paper } from '@material-ui/core';
+import { Grid, FormControl, Input, Select, MenuItem, Avatar, Paper, Box } from '@material-ui/core';
+import { GetJobListQuery, GetCompaniesQuery, GetCountriesQuery } from '../../generated/graphql';
 
 moment.default().locale('es');
 
@@ -13,10 +13,14 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     formControl: {
       margin: `${theme.spacing(1)}px 0`,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        maxWidth: 250,
-      },
+    },
+    select: {
+      border: '1px solid #dcdcdc',
+      padding: theme.spacing(1),
+      borderRadius: theme.spacing(1),
+    },
+    dropDownIcon: {
+      right: 8,
     },
     label: {
       marginTop: theme.spacing(1),
@@ -24,11 +28,16 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     large: {
       height: 50,
-      width: 50
+      width: 50,
+      marginRight: theme.spacing(2),
+    },
+    link: {
+      textDecoration: 'none',
     },
     jobPaper: {
       margin: `${theme.spacing(2)}px 0`,
-      padding: theme.spacing(2)
+      padding: theme.spacing(2),
+      borderRadius: theme.spacing(1),
     }
   }),
 );
@@ -83,15 +92,19 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
 
   return (
   <React.Fragment>
-    <h1>GraphQl Jobs</h1>
+    <h1 className="bold">GraphQl Jobs</h1>
     <h4 className={classes.label}>Filtrar por</h4>
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid item xs={12} sm={6} md={4}>
-        <FormControl className={classes.formControl}>
+        <FormControl fullWidth className={classes.formControl}>
           <Select
             id="select-country"
             displayEmpty
             multiple
+            className={classes.select}
+            classes={{
+              icon: classes.dropDownIcon
+            }}
             value={selectedCountries}
             onChange={(e : any) => {
               setSelectedCountries(e.target.value);
@@ -107,6 +120,7 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
               });
               return (selectedNames as string[]).join(', ');
             }}
+            input={<Input disableUnderline />}
             MenuProps={MenuProps}
           >
             <MenuItem disabled value="">
@@ -121,11 +135,15 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
         </FormControl>
       </Grid>
       <Grid item xs={12} sm={6} md={4}>
-        <FormControl className={classes.formControl}>
+        <FormControl fullWidth className={classes.formControl}>
           <Select
             id="select-company"
             displayEmpty
             multiple
+            className={classes.select}
+            classes={{
+              icon: classes.dropDownIcon
+            }}
             value={selectedCompanies}
             onChange={(e : any) => {
               setSelectedCompanies(e.target.value);
@@ -141,6 +159,7 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
               });
               return (selectedNames as string[]).join(', ');
             }}
+            input={<Input disableUnderline />}
             MenuProps={MenuProps}
           >
             <MenuItem disabled value="">
@@ -156,17 +175,21 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
       </Grid>
     </Grid>
     <h4 className={classes.label}>Ordenar por fecha</h4>
-    <Grid container>
+    <Grid container spacing={3}>
       <Grid item xs={12} sm={6}>
-        <FormControl className={classes.formControl}>
+        <FormControl fullWidth className={classes.formControl}>
           <Select
             labelId="select-order-label"
             id="select-order"
+            className={classes.select}
+            classes={{
+              icon: classes.dropDownIcon
+            }}
             value={sortOrder}
             onChange={(e : any) => {
               sortJobs(e.target.value);
             }}
-            input={<Input />}
+            input={<Input disableUnderline />}
             MenuProps={MenuProps}
           >
             <MenuItem key="order-desc" value="desc">
@@ -179,20 +202,34 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
         </FormControl>
       </Grid>
     </Grid>
-    <h3>Empleos</h3>
+    <h2>Empleos</h2>
     {filteredJobs && filteredJobs.map(
         (job, i) =>
           !!job && (
-            <Link to={`/detail/${job.company.slug}/${job.slug}`}>
-              <Paper key={i} variant="outlined" className={classes.jobPaper}>
-                {job.company.logoUrl
-                  ? (
-                    <Avatar alt={job.company.name} src={job.company.logoUrl} className={classes.large} />
-                  ) : (
-                    <Avatar alt={job.company.name} className={classes.large}>{job.company.name.charAt(0).toUpperCase()}</Avatar>
-                  )}
-                <h4>{job.title}</h4>({job.company?.name})
-                <span>{moment.default(job.postedAt).format('LL')}</span>
+            <Link key={i} to={`/detail/${job.company.slug}/${job.slug}`} style={{ textDecoration: 'none'}}>
+              <Paper variant="outlined" className={classes.jobPaper}>
+                <Grid container direction="row" alignItems="center">
+                  {job.company.logoUrl
+                    ? (
+                      <Avatar alt={job.company.name} src={job.company.logoUrl} className={classes.large} />
+                    ) : (
+                      <Avatar alt={job.company.name} className={classes.large}>{job.company.name.charAt(0).toUpperCase()}</Avatar>
+                    )}
+                  <Box flexGrow={1}>
+                    <h3>{job.title}</h3>
+                      <Grid container>
+                      <Grid item xs={12} sm={4}>
+                        {job.company?.name}
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        {job.cities.length && job.cities[0].country.name}
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <span>{moment.default(job.postedAt).format('LL')}</span>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Grid>
               </Paper>
             </Link>
           ),

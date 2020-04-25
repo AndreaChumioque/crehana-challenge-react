@@ -9,8 +9,6 @@ function App() {
   return (
     <Router>
       <Container maxWidth="md">
-        {/* <JobList /> */}
-
         <Route path="/" exact component={JobList} />
         <Route path="/detail/:companyslug/:jobslug" exact component={JobDetail} />
       </Container >
