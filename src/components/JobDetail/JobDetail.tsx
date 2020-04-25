@@ -3,7 +3,7 @@ import * as moment from 'moment';
 import { useHistory } from 'react-router-dom';
 import { Marked } from '@ts-stack/markdown';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { Grid, Typography, Avatar, Button } from '@material-ui/core';
+import { Grid, Typography, Avatar, Button, Divider } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBackIos';
 import { GetJobDetailQuery } from '../../generated/graphql';
 
@@ -13,6 +13,9 @@ interface Props {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    avatar: {
+      backgroundColor: '#ffd391',
+    },
     small: {
       height: 35,
       width: 35,
@@ -31,7 +34,12 @@ const useStyles = makeStyles((theme: Theme) =>
     button: {
       borderRadius: theme.spacing(1),
       marginTop: theme.spacing(2),
-      color: '#60e7f3'
+    },
+    iconButton: {
+      color: '#60e7f3',
+    },
+    divider: {
+      marginTop: theme.spacing(2),
     },
   }),
 );
@@ -51,7 +59,7 @@ const JobDetail: React.FC<Props> = ({ data }) => {
         <React.Fragment>
           <Button
             className={classes.button}
-            startIcon={<ArrowBackIcon />}
+            startIcon={<ArrowBackIcon className={classes.iconButton} />}
             onClick={() => history.goBack()}
           >
             Volver
@@ -67,10 +75,11 @@ const JobDetail: React.FC<Props> = ({ data }) => {
               ? (
                 <Avatar alt={data.job.company!.name} src={data.job.company!.logoUrl} className={classes.small} />
               ) : (
-                <Avatar alt={data.job.company!.name} className={classes.small}>{data.job.company!.name.charAt(0).toUpperCase()}</Avatar>
+                <Avatar alt={data.job.company!.name} className={`${classes.small} ${classes.avatar}`}>{data.job.company!.name.charAt(0).toUpperCase()}</Avatar>
               )}
             <span>{data.job.company?.name}</span>
           </Grid>
+          <Divider light className={classes.divider} />
           <Grid item xs={12} sm={10} md={8} id="descriptionContainer">
             <div dangerouslySetInnerHTML={{ __html: Marked.parse(data.job.description!) }} />
           </Grid>

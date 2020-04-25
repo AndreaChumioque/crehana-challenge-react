@@ -6,10 +6,12 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Grid, FormControl, Input, Select, MenuItem, Avatar, Paper, Box } from '@material-ui/core';
 import { GetJobListQuery, GetCompaniesQuery, GetCountriesQuery } from '../../generated/graphql';
 
-// moment.default().locale('es');
-
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    logo: {
+      color: '#60e7f3',
+      fontSize: '2.5em',
+    },
     formControl: {
       margin: `${theme.spacing(1)}px 0`,
     },
@@ -24,6 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
     label: {
       marginTop: theme.spacing(1),
       marginBottom: 0,
+    },
+    avatar: {
+      backgroundColor: '#ffd391',
     },
     large: {
       height: 50,
@@ -91,7 +96,7 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
 
   return (
   <React.Fragment>
-    <h1 className="bold">GraphQl Jobs</h1>
+    <h1 className={classes.logo}>GraphQl Jobs</h1>
     <h4 className={classes.label}>Filtrar por</h4>
     <Grid container spacing={3}>
       <Grid item xs={12} sm={6} md={4}>
@@ -212,7 +217,7 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
                     ? (
                       <Avatar alt={job.company.name} src={job.company.logoUrl} className={classes.large} />
                     ) : (
-                      <Avatar alt={job.company.name} className={classes.large}>{job.company.name.charAt(0).toUpperCase()}</Avatar>
+                      <Avatar alt={job.company.name} className={`${classes.large} ${classes.avatar}`}>{job.company.name.charAt(0).toUpperCase()}</Avatar>
                     )}
                   <Box flexGrow={1}>
                     <h3>{job.title}</h3>
@@ -221,7 +226,7 @@ const JobList: React.FC<Props> = ({ jobsData, companiesData, countriesData }) =>
                         {job.company?.name}
                       </Grid>
                       <Grid item xs={12} sm={4}>
-                        {job.cities.length && job.cities[0].country.name}
+                        {job.cities.length ? job.cities[0].country.name : ''}
                       </Grid>
                       <Grid item xs={12} sm={4}>
                         <span>{moment.default(job.postedAt).format('LL')}</span>
