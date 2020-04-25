@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { isEmpty, cloneDeep, orderBy } from 'lodash';
 import * as moment from 'moment';
-import 'moment/locale/es';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Grid, FormControl, Input, Select, MenuItem, Avatar, Paper, Box } from '@material-ui/core';
 import { GetJobListQuery, GetCompaniesQuery, GetCountriesQuery } from '../../generated/graphql';
 
-moment.default().locale('es');
+// moment.default().locale('es');
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

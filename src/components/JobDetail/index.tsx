@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useGetJobDetailQuery } from '../../generated/graphql';
+
 import JobDetail from './JobDetail';
 import Loader from '../Loader';
 
